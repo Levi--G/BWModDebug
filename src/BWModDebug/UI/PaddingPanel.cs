@@ -31,7 +31,7 @@ namespace BWModDebug.UI
             }
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             if (Top.HasValue || Bottom.HasValue)
             {
@@ -43,7 +43,7 @@ namespace BWModDebug.UI
                 GUILayout.BeginHorizontal(Options);
                 Space(Left);
             }
-            Child.Draw();
+            Child?.Draw();
             if (Left.HasValue || Right.HasValue)
             {
                 Space(Right);

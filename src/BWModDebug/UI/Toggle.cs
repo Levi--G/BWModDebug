@@ -18,7 +18,7 @@ namespace BWModDebug.UI
             this.Text = Text;
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             if (GUILayout.Toggle(Checked, Text, Options) != Checked)
             {

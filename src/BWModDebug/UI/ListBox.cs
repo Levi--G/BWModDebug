@@ -24,7 +24,7 @@ namespace BWModDebug.UI
             GUILayout.Label(o.ToString(), Options);
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             var source = ItemsSource ?? DynamicSource?.Invoke();
             if (source == null) { return; }

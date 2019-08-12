@@ -17,7 +17,7 @@ namespace BWModDebug.UI
             this.Text = Text;
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             if (GUILayout.Button(Text, Options))
             {

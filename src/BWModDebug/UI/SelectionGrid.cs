@@ -19,11 +19,12 @@ namespace BWModDebug.UI
             Buttons = buttons;
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             var newval = GUILayout.SelectionGrid(Selected, Buttons, Buttons.Length, Options);
             if (newval != Selected)
             {
+                Selected = newval;
                 OnSelectionChanged?.Invoke(this, EventArgs.Empty);
             }
         }

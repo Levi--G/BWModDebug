@@ -15,7 +15,7 @@ namespace BWModDebug.UI
             Orientation = orientation;
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             if (Orientation == Orientation.Vertical)
             {

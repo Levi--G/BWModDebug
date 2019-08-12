@@ -15,11 +15,6 @@ namespace BWModDebug.UI
             this.Options = Options;
         }
 
-        public void Draw()
-        {
-
-        }
-
-        protected abstract void OnDraw();
+        public abstract void Draw();
     }
 }

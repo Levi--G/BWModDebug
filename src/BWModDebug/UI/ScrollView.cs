@@ -18,7 +18,7 @@ namespace BWModDebug.UI
         {
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             GUILayout.BeginScrollView(ScrollPosition, HorizontalAlwaysVisible, VerticalAlwaysVisible, Options);
             DrawChildren();

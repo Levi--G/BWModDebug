@@ -13,12 +13,14 @@ namespace BWModDebug
     {
         public static string DebugPath => ModLoader.FolderPath + "\\ModDebug";
 
+        public static string DebugLogPath => ModLoader.LogPath + "\\ModDebugger.log";
+        
         FileSystemWatcher watcher;
 
         object queueKey = new object();
         Queue<string> fileQueue = new Queue<string>();
 
-        ModLogger logger = new ModLogger("[BWMD]");
+        ModLogger logger = new ModLogger("[BWMD]", DebugLogPath);
 
         List<Mod> Mods = new List<Mod>();
 
@@ -26,11 +28,13 @@ namespace BWModDebug
 
         public void Load()
         {
+            logger.Log("Starting Debugger");
             UnityEngine.Object.DontDestroyOnLoad(GameObject);
         }
 
         public void StartWatch()
         {
+            logger.Log("Starting watch on Debug folder");
             Directory.CreateDirectory(Debugger.DebugPath);
 
             foreach (var dir in Directory.GetDirectories(Debugger.DebugPath))
@@ -55,6 +59,7 @@ namespace BWModDebug
             watcher.Renamed += Watcher_Triggered;
             watcher.Error += Watcher_Error;
             watcher.EnableRaisingEvents = true;
+            logger.Log("Watching started");
         }
 
         private void Watcher_Error(object sender, ErrorEventArgs e)

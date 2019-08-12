@@ -11,6 +11,7 @@ namespace BWModDebug
 {
     public class DebuggerGui : MonoBehaviour
     {
+        ModLogger logger = new ModLogger("[BWMDUI]", Debugger.DebugLogPath);
         Dictionary<FileInfo, List<Type>> allmods;
 
         Debugger debugger = new Debugger();
@@ -27,33 +28,60 @@ namespace BWModDebug
 
         void Start()
         {
-            debugger.StartWatch();
+            try
+            {
+                logger.ClearLog();
+                logger.Log("Starting Debugger UI");
+                debugger.Load();
+                debugger.StartWatch();
 
-            screenSelection = new SelectionGrid(new string[] { "Log", "Mods", "Debugger" }, GUILayout.Height(25));
-            logWindow = LogWindow();
-            modWindow = ModWindow();
-            debugWindow = DebugWindow();
+                screenSelection = new SelectionGrid(new string[] { "Log", "Mods", "Debugger" }, GUILayout.Height(25));
+                screenSelection.Selected = 1;
+                logWindow = LogWindow();
+                modWindow = ModWindow();
+                debugWindow = DebugWindow();
+                RefreshMods();
+                logger.Log("Debugger UI startup complete");
+            }
+            catch (Exception e)
+            {
+                logger.Log($"While starting UI threw {e.GetType().FullName}: {e.Message}{Environment.NewLine}{e.StackTrace}");
+            }
         }
 
         void OnGUI()
         {
-            GUI.ModalWindow(0, new Rect(0, 0, 600, 800), Window, "[BWMD]Debugger");
+            try
+            {
+                GUI.ModalWindow(0, new Rect(0, 0, 800, 600), Window, "[BWMD]Debugger");
+            }
+            catch (Exception e)
+            {
+                logger.Log($"While drawing UI threw {e.GetType().FullName}: {e.Message}{Environment.NewLine}{e.StackTrace}");
+            }
         }
 
         private void Window(int id)
         {
-            screenSelection.Draw();
-            switch (screenSelection.Selected)
+            try
             {
-                case 0:
-                    logWindow.Draw();
-                    break;
-                case 1:
-                    modWindow.Draw();
-                    break;
-                case 2:
-                    debugWindow.Draw();
-                    break;
+                screenSelection.Draw();
+                switch (screenSelection.Selected)
+                {
+                    case 0:
+                        logWindow.Draw();
+                        break;
+                    case 1:
+                        modWindow.Draw();
+                        break;
+                    case 2:
+                        debugWindow.Draw();
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Log($"While drawing window UI threw {e.GetType().FullName}: {e.Message}{Environment.NewLine}{e.StackTrace}");
             }
         }
 
@@ -87,6 +115,7 @@ namespace BWModDebug
                 DynamicSource = () => allmods.Keys,
                 ItemTemplate = (file) =>
                 {
+                    GUILayout.BeginHorizontal();
                     bool loaded = ModLoader.Instance.IsLoaded(file);
                     bool newCheckboxStatus = GUILayout.Toggle(loaded, file.Name, GUILayout.Width(150));
                     if (newCheckboxStatus && !loaded)
@@ -119,6 +148,7 @@ namespace BWModDebug
                         ModLoader.Instance.RefreshModFiles();
                         RefreshMods();
                     }
+                    GUILayout.EndHorizontal();
                 }
             };
             scroll.Children.Add(list);
@@ -127,7 +157,8 @@ namespace BWModDebug
 
         private IUIElement DebugWindow()
         {
-            throw new NotImplementedException();
+            var padding = new PaddingPanel() { Left = 5, Right = 5 };
+            return padding;
         }
     }
 }

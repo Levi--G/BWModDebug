@@ -15,7 +15,7 @@ namespace BWModDebug.UI
             this.Text = Text;
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             GUILayout.Label(Text, Options);
         }

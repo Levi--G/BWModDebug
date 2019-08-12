@@ -17,7 +17,7 @@ namespace BWModDebug.UI
             this.Text = Text;
         }
 
-        protected override void OnDraw()
+        public override void Draw()
         {
             string newText;
             if (Text != (newText = GUILayout.TextField(Text, Options)) && OnTextChanged != null)
