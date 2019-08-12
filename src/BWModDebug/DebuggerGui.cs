@@ -53,6 +53,7 @@ namespace BWModDebug
         {
             try
             {
+                debugger.Update();
                 GUI.ModalWindow(0, new Rect(0, 0, 800, 600), Window, "[BWMD]Debugger");
             }
             catch (Exception e)

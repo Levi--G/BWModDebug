@@ -53,6 +53,11 @@ namespace BWModDebug
             }
 
             watcher = new FileSystemWatcher(DebugPath, "*.dll");
+            watcher.NotifyFilter = NotifyFilters.LastAccess
+                                 | NotifyFilters.LastWrite
+                                 | NotifyFilters.FileName
+                                 | NotifyFilters.DirectoryName 
+                                 | NotifyFilters.Size;
             watcher.Changed += Watcher_Triggered;
             watcher.Deleted += Watcher_Triggered;
             watcher.Created += Watcher_Triggered;
@@ -60,6 +65,12 @@ namespace BWModDebug
             watcher.Error += Watcher_Error;
             watcher.EnableRaisingEvents = true;
             logger.Log("Watching started");
+            logger.Log("Loading mods");
+            foreach (var file in Directory.GetFiles(DebugPath))
+            {
+                HandleChange(file);
+            }
+            logger.Log("Mods loaded");
         }
 
         private void Watcher_Error(object sender, ErrorEventArgs e)
@@ -70,9 +81,10 @@ namespace BWModDebug
 
         private void Watcher_Triggered(object sender, FileSystemEventArgs e)
         {
+            if (Path.GetDirectoryName(e.FullPath) != DebugPath || !e.FullPath.EndsWith(".dll")) { return; }//Don't care, not in main dir
             lock (queueKey)
             {
-                if (Path.GetDirectoryName(e.FullPath) == DebugPath && !fileQueue.Contains(e.FullPath))
+                if (!fileQueue.Contains(e.FullPath))
                 {
                     fileQueue.Enqueue(e.FullPath);
                 }
@@ -97,6 +109,7 @@ namespace BWModDebug
 
         void HandleChange(string file)
         {
+            if (Path.GetDirectoryName(file) != DebugPath || !file.EndsWith(".dll")) { return; }//Don't care, not in main dir
             logger.Log($"INFO: File {file} triggered an update");
             var mod = Mods.FirstOrDefault(m => m.FullPath == file);
             if (File.Exists(file))
