@@ -19,7 +19,7 @@ namespace BWModDebug
         SelectionGrid screenSelection;
         IUIElement logWindow;
         IUIElement modWindow;
-        IUIElement debugWindow;
+        IUIElement modInspectionWindow;
 
         void RefreshMods()
         {
@@ -32,14 +32,15 @@ namespace BWModDebug
             {
                 logger.ClearLog();
                 logger.Log("Starting Debugger UI");
+                debugger.OnModUpdate += Debugger_OnModUpdate;
                 debugger.Load();
                 debugger.StartWatch();
-
+                DialogHandler.Instance = new DialogHandler();
                 screenSelection = new SelectionGrid(new string[] { "Log", "Mods", "Debugger" }, GUILayout.Height(25));
                 screenSelection.Selected = 1;
                 logWindow = LogWindow();
                 modWindow = ModWindow();
-                debugWindow = DebugWindow();
+                modInspectionWindow = ModInspectionWindow();
                 RefreshMods();
                 logger.Log("Debugger UI startup complete");
             }
@@ -49,12 +50,24 @@ namespace BWModDebug
             }
         }
 
+        private void Debugger_OnModUpdate(object sender, EventArgs e)
+        {
+            modInspectionWindow = ModInspectionWindow();
+        }
+
         void OnGUI()
         {
             try
             {
                 debugger.Update();
-                GUI.ModalWindow(0, new Rect(0, 0, 800, 600), Window, "[BWMD]Debugger");
+                if (DialogHandler.Instance.DialogPending)
+                {
+                    DialogHandler.Instance.Draw();
+                }
+                else
+                {
+                    GUI.Window(0, new Rect(0, 0, 800, 600), Window, "[BWMD]Debugger");
+                }
             }
             catch (Exception e)
             {
@@ -76,7 +89,7 @@ namespace BWModDebug
                         modWindow.Draw();
                         break;
                     case 2:
-                        debugWindow.Draw();
+                        modInspectionWindow.Draw();
                         break;
                 }
             }
@@ -156,9 +169,15 @@ namespace BWModDebug
             return padding;
         }
 
-        private IUIElement DebugWindow()
+        private IUIElement ModInspectionWindow()
         {
             var padding = new PaddingPanel() { Left = 5, Right = 5 };
+            var scroll = new ScrollView();
+            padding.Child = scroll;
+            foreach (var mod in debugger.GetMods().SelectMany(m => m.Types.Where(t => t.Instance != null)))
+            {
+                scroll.Children.Add(new ObjectInspector(mod.Type.FullName, () => mod.Instance));
+            }
             return padding;
         }
     }
