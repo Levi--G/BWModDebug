@@ -19,11 +19,10 @@ namespace BWModDebug.UI
 
         public override void Draw()
         {
-            string newText;
-            if (Text != (newText = GUILayout.TextField(Text, Options)) && OnTextChanged != null)
+            string oldText = Text;
+            if (oldText != (Text = GUILayout.TextField(Text, Options)) && OnTextChanged != null)
             {
-                var args = new TextChangedEventArgs(Text, newText);
-                Text = newText;
+                var args = new TextChangedEventArgs(oldText, Text);
                 OnTextChanged.Invoke(this, args);
             }
         }

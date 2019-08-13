@@ -11,6 +11,8 @@ namespace BWModDebug
 {
     class Debugger
     {
+        public event EventHandler OnModUpdate;
+
         public static string DebugPath => ModLoader.FolderPath + "\\ModDebug";
 
         public static string DebugLogPath => ModLoader.LogPath + "\\ModDebugger.log";
@@ -25,6 +27,11 @@ namespace BWModDebug
         List<Mod> Mods = new List<Mod>();
 
         GameObject GameObject = new GameObject();
+
+        public List<Mod> GetMods()
+        {
+            return new List<Mod>(Mods);
+        }
 
         public void Load()
         {
@@ -189,6 +196,7 @@ namespace BWModDebug
                 type.Instance = (MonoBehaviour)GameObject.AddComponent(type.Type);
                 logger.Log($"Mod {mod.Name} loaded {type.Type.FullName}!");
             }
+            OnModUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         void RemoveMod(Mod mod)
@@ -203,6 +211,8 @@ namespace BWModDebug
             }
             mod.Types.Clear();
             mod.MD5 = null;
+            Mods.Remove(mod);
+            OnModUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         string CalculateMD5(string file)

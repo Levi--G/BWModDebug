@@ -51,17 +51,22 @@
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Button.cs" />
+    <Compile Include="UI\DialogBase.cs" />
+    <Compile Include="UI\DialogHandler.cs" />
     <Compile Include="UI\IUIElement.cs" />
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\LayoutElement.cs" />
     <Compile Include="UI\ListBox.cs" />
+    <Compile Include="UI\ObjectInspector.cs" />
     <Compile Include="UI\PaddingPanel.cs" />
     <Compile Include="UI\ScrollView.cs" />
     <Compile Include="UI\LayoutPanel.cs" />
     <Compile Include="UI\SelectionGrid.cs" />
     <Compile Include="UI\StackPanel.cs" />
+    <Compile Include="UI\TextDialog.cs" />
     <Compile Include="UI\TextField.cs" />
     <Compile Include="UI\Toggle.cs" />
+    <Compile Include="UI\ToggleHide.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

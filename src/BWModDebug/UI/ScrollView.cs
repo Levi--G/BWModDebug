@@ -20,7 +20,7 @@ namespace BWModDebug.UI
 
         public override void Draw()
         {
-            GUILayout.BeginScrollView(ScrollPosition, HorizontalAlwaysVisible, VerticalAlwaysVisible, Options);
+            ScrollPosition = GUILayout.BeginScrollView(ScrollPosition, HorizontalAlwaysVisible, VerticalAlwaysVisible, Options);
             DrawChildren();
             GUILayout.EndScrollView();
         }
