@@ -8,6 +8,11 @@ namespace BWModDebug.UI
 {
     public class TextDialog : DialogBase
     {
+        public event EventHandler OnSubmit;
+        public event EventHandler OnClose;
+
+        public string Text { get => field.Text; set => field.Text = value; }
+
         Label label = new Label("");
         TextField field = new TextField();
         Button ok = new Button("ok");
@@ -19,6 +24,21 @@ namespace BWModDebug.UI
             this.title = title;
             label.Text = text;
             field.Text = placeholder;
+            ok.OnClick += Ok_OnClick;
+            cancel.OnClick += Cancel_OnClick;
+        }
+
+        private void Cancel_OnClick(object sender, EventArgs e)
+        {
+            Close();
+            OnClose?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Ok_OnClick(object sender, EventArgs e)
+        {
+            OnSubmit?.Invoke(this, EventArgs.Empty);
+            Close();
+            OnClose?.Invoke(this, EventArgs.Empty);
         }
 
         void DrawWindow(int id)

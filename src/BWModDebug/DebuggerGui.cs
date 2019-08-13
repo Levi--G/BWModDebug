@@ -36,7 +36,7 @@ namespace BWModDebug
                 debugger.Load();
                 debugger.StartWatch();
                 DialogHandler.Instance = new DialogHandler();
-                screenSelection = new SelectionGrid(new string[] { "Log", "Mods", "Debugger" }, GUILayout.Height(25));
+                screenSelection = new SelectionGrid(new string[] { "Log", "Mods", "ModInspection" }, GUILayout.Height(25));
                 screenSelection.Selected = 1;
                 logWindow = LogWindow();
                 modWindow = ModWindow();
@@ -176,7 +176,8 @@ namespace BWModDebug
             padding.Child = scroll;
             foreach (var mod in debugger.GetMods().SelectMany(m => m.Types.Where(t => t.Instance != null)))
             {
-                scroll.Children.Add(new ObjectInspector(mod.Type.FullName, () => mod.Instance));
+                logger.Log($"Adding {mod.Type.FullName} to ModInspectionWindow with value {mod.Instance.ToString()}");
+                scroll.Children.Add(new ObjectInspector(mod.Type.FullName, () => mod.Instance, null, GUILayout.Width(800 / 5)) { SelfUpdate = true });
             }
             return padding;
         }
